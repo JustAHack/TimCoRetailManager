@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
+using TRMDesktopUI.Helpers;
 using TRMDesktopUI.ViewModels;
 
 // https://caliburnmicro.com/documentation/bootstrapper
@@ -18,15 +20,21 @@ namespace TRMDesktopUI
 		public Bootstrapper()
 		{
 			Initialize();
+
+			_ = ConventionManager.AddElementConvention<PasswordBox>(
+				PasswordBoxHelper.BoundPasswordProperty,
+				"Password",
+				"PasswordChanged");
 		}
 
 		protected override void Configure()
 		{
-			_container.Instance(_container);
+			_ = _container.Instance(_container);
 
-			_container
+			_ = _container
 				.Singleton<IWindowManager, WindowManager>()
-				.Singleton<IEventAggregator, EventAggregator>();
+				.Singleton<IEventAggregator, EventAggregator>()
+				.Singleton<IAPIHelper, APIHelper>();
 
 			GetType().Assembly.GetTypes()
 				.Where(type => type.IsClass)
