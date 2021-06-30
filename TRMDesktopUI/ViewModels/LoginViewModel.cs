@@ -21,9 +21,9 @@ namespace TRMDesktopUI.ViewModels
 
 		public string UserName
 		{
-			get { return _userName; }
-			set 
-			{ 
+			get => _userName;
+			set
+			{
 				_userName = value;
 				NotifyOfPropertyChange(() => UserName);
 				NotifyOfPropertyChange(() => CanLogIn);
@@ -32,12 +32,39 @@ namespace TRMDesktopUI.ViewModels
 
 		public string Password
 		{
-			get { return _password; }
-			set 
-			{ 
+			get => _password;
+			set
+			{
 				_password = value;
 				NotifyOfPropertyChange(() => Password);
 				NotifyOfPropertyChange(() => CanLogIn);
+			}
+		}
+
+
+		public bool IsErrorVisible
+		{
+			get
+			{
+				bool output = false;
+				if (ErrorMessage?.Length > 0)
+				{
+					output = true;
+				}
+				return output;
+			}
+		}
+
+		private string _errorMessage;
+
+		public string ErrorMessage
+		{
+			get => _errorMessage;
+			set
+			{
+				_errorMessage = value;
+				NotifyOfPropertyChange(() => IsErrorVisible);
+				NotifyOfPropertyChange(() => ErrorMessage);
 			}
 		}
 
@@ -59,11 +86,13 @@ namespace TRMDesktopUI.ViewModels
 		{
 			try
 			{
+				// Reset the error messages when attempting a new login
+				ErrorMessage = "";
 				var result = await _apiHelper.Authenticate(UserName, Password);
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);
+				ErrorMessage = ex.Message;
 			}
 		}
 
