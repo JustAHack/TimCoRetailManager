@@ -100,23 +100,16 @@ namespace TRMDesktopUI.ViewModels
 		private decimal CalculateSubTotal()
 		{
 			decimal subtotal = 0;
-
-			foreach (var item in Cart)
-			{
-				subtotal += (item.Product.RetailPrice * item.QuantityInCart);
-			}
-
-			return subtotal;
+			return subtotal = Cart.Sum(x => x.Product.RetailPrice * x.QuantityInCart);
 		}
+
 		private decimal CalculateTax()
 		{
 			decimal taxAmount = 0;
 			decimal taxRate = _configHelper.GetTaxRate() / 100;
-			taxAmount = Cart
+			return taxAmount = Cart
 							.Where(x => x.Product.IsTaxable)
 							.Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
-
-			return taxAmount;
 		}
 
 		public string Total
@@ -127,9 +120,6 @@ namespace TRMDesktopUI.ViewModels
 				return total.ToString("C");
 			}
 		}
-
-		
-
 
 		public bool CanAddToCart
 		{
