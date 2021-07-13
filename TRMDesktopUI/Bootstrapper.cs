@@ -32,6 +32,7 @@ namespace TRMDesktopUI
 		protected override void Configure()
 		{
 			_ = _container.Instance(_container)
+				.PerRequest<ISaleEndpoint, SaleEndpoint>()
 				.PerRequest<IProductEndpoint, ProductEndpoint>();
 
 			_ = _container

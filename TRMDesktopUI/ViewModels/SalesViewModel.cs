@@ -18,11 +18,13 @@ namespace TRMDesktopUI.ViewModels
 		private ProductModel _selectedProduct;
 		private int _itemQuantity = 1;
 		private IProductEndpoint _productEndpoint;
+		private ISaleEndpoint _saleEndpoint;
 		private IConfigHelper _configHelper;
 
-		public SalesViewModel(IProductEndpoint productEndpoint, IConfigHelper configHelper)
+		public SalesViewModel(IProductEndpoint productEndpoint, ISaleEndpoint saleEndpoint, IConfigHelper configHelper)
 		{
 			_productEndpoint = productEndpoint;
+			_saleEndpoint = saleEndpoint;
 			_configHelper = configHelper;
 		}
 
@@ -157,7 +159,10 @@ namespace TRMDesktopUI.ViewModels
 			{
 				bool output = false;
 
-				// Make sure something is in the cart
+				if (Cart.Count > 0)
+				{
+					output = true;
+				}
 
 				return output;
 			}
@@ -188,6 +193,7 @@ namespace TRMDesktopUI.ViewModels
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
+			NotifyOfPropertyChange(() => CanCheckout);
 		}
 
 		public void RemoveFromCart()
@@ -197,10 +203,20 @@ namespace TRMDesktopUI.ViewModels
 			NotifyOfPropertyChange(() => Total);
 		}
 
-		public void Checkout()
+		public async Task Checkout()
 		{
+			SaleModel sale = new SaleModel();
 
+			foreach (var item in Cart)
+			{
+				sale.SaleDetails.Add(new SaleDetailModel
+				{
+					ProductId = item.Product.Id,
+					Quantity = item.QuantityInCart
+				});
+			}
+
+			await _saleEndpoint.PostSale(sale);
 		}
-
 	}
 }
