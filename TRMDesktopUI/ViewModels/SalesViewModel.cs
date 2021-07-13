@@ -225,7 +225,7 @@ namespace TRMDesktopUI.ViewModels
 			{
 				_ = Cart.Remove(SelectedCartItem);
 			}
-
+			NotifyOfPropertyChange(() => CanAddToCart);
 			NotifyOfPropertyChange(() => SubTotal);
 			NotifyOfPropertyChange(() => Tax);
 			NotifyOfPropertyChange(() => Total);
