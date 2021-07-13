@@ -38,6 +38,17 @@ namespace TRMDesktopUI.ViewModels
 			await LoadProducts();
 		}
 
+		private async Task ResetSalesViewModel()
+		{
+			Cart = new BindingList<CartItemDisplayModel>();
+			// TODO: Add clearing the selected cart item if it does not remove itself
+			await LoadProducts();
+			NotifyOfPropertyChange(() => SubTotal);
+			NotifyOfPropertyChange(() => Tax);
+			NotifyOfPropertyChange(() => Total);
+			NotifyOfPropertyChange(() => CanCheckout);
+		}
+
 		private async Task LoadProducts()
 		{
 			var productList = await _productEndpoint.GetAll();
@@ -245,6 +256,8 @@ namespace TRMDesktopUI.ViewModels
 			}
 
 			await _saleEndpoint.PostSale(sale);
+
+			await ResetSalesViewModel();
 		}
 	}
 }
