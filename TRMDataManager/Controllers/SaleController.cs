@@ -9,10 +9,11 @@ using TRMDataManager.Library.DataAccess;
 using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Controllers
-{
+{ 
     [Authorize]
     public class SaleController : ApiController
     {
+        [Authorize(Roles = "Cashier")]
         public void Post(SaleModel sale)
 		{
             var cashierId = RequestContext.Principal.Identity.GetUserId();
@@ -20,6 +21,7 @@ namespace TRMDataManager.Controllers
             data.SaveSale(sale, cashierId);
 		}
 
+        [Authorize(Roles = "Manager,Admin")]
         [Route("GetSalesReport")]
         public List<SaleReportModel> GetSalesReport()
 		{
