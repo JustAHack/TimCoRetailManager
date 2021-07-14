@@ -9,14 +9,14 @@ using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Controllers
 {
-    [Authorize(Roles = "Cashier")]
-    public class ProductController : ApiController
-    {
-        public List<ProductModel> Get()
+	[Authorize(Roles = "Cashier")]
+	public class ProductController : ApiController
+	{
+		public List<ProductModel> Get()
 		{
-            ProductData data = new ProductData();
+			ProductData data = new ProductData();
 
-            return data.GetProducts();
+			return data.GetProducts();
 		}
-    }
+	}
 }
