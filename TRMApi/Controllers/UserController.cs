@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -19,13 +20,15 @@ namespace TRMApi.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly ILogger _logger;
 		private readonly IUserData _userData;
 
 		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, 
-								IUserData userData)
+								ILogger<UserController> logger, IUserData userData)
 		{
 			_context = context;
 			_userManager = userManager;
+			_logger = logger;
 			_userData = userData;
 		}
 
@@ -79,7 +82,13 @@ namespace TRMApi.Controllers
 		[Route("Admin/AddRole")]
 		public async Task AddRole(UserRolePairModel pairing)
 		{
+			string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
 			var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+			_logger.LogInformation("Admin {Admin} added user {User} to role {Role}", 
+									loggedInUserId, user.Id, pairing.RoleName);
+
 			await _userManager.AddToRoleAsync(user, pairing.RoleName);
 		}
 
@@ -88,7 +97,12 @@ namespace TRMApi.Controllers
 		[Route("Admin/RemoveRole")]
 		public async Task RemoveRole(UserRolePairModel pairing)
 		{
+			string loggedInUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 			var user = await _userManager.FindByIdAsync(pairing.UserId);
+
+			_logger.LogInformation("Admin {Admin} removed user {User} from role {Role}",
+									loggedInUserId, user.Id, pairing.RoleName);
+
 			await _userManager.RemoveFromRoleAsync(user, pairing.RoleName);
 		}
 	}

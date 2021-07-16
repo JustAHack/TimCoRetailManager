@@ -42,7 +42,7 @@ namespace TRMApi
 			services.AddTransient<IProductData, ProductData>();
 			services.AddTransient<ISaleData, SaleData>();
 			services.AddTransient<IUserData, UserData>();
-			
+
 
 			services.AddAuthentication(options =>
 			{

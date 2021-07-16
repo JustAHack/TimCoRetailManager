@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using Dapper;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
@@ -17,10 +15,12 @@ namespace TRMDataManager.Library.Internal.DataAccess
 		private IDbConnection _connection;
 		private IDbTransaction _transaction;
 		private bool isClosed = false;
+		private readonly ILogger _logger;
 		private readonly IConfiguration _configuration;
 
-		public SQLDataAccess(IConfiguration configuration)
+		public SQLDataAccess(ILogger<ISQLDataAccess> logger, IConfiguration configuration)
 		{
+			_logger = logger;
 			_configuration = configuration;
 		}
 
@@ -97,9 +97,9 @@ namespace TRMDataManager.Library.Internal.DataAccess
 				{
 					CommitTransaction();
 				}
-				catch
+				catch (Exception ex)
 				{
-					// TODO: Log this issue
+					_logger.LogError(ex, "Commit transaction failed in the dispose method.");
 				}
 			}
 
