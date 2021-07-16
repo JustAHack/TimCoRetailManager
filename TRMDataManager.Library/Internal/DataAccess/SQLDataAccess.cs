@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
@@ -16,10 +17,17 @@ namespace TRMDataManager.Library.Internal.DataAccess
 		private IDbConnection _connection;
 		private IDbTransaction _transaction;
 		private bool isClosed = false;
+		private readonly IConfiguration _configuration;
+
+		public SQLDataAccess(IConfiguration configuration)
+		{
+			_configuration = configuration;
+		}
 
 		public string GetConnectionString(string name)
 		{
-			return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+			var conn = _configuration.GetConnectionString(name);
+			return conn;
 		}
 
 		public List<T> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)

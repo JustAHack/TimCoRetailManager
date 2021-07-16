@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,18 +23,20 @@ namespace TRMApi.Controllers
 	{
 		private readonly ApplicationDbContext _context;
 		private readonly UserManager<IdentityUser> _userManager;
+		private readonly IConfiguration _configuration;
 
-		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+		public UserController(ApplicationDbContext context, UserManager<IdentityUser> userManager, IConfiguration configuration)
 		{
 			_context = context;
 			_userManager = userManager;
+			_configuration = configuration;
 		}
 
 		[HttpGet]
 		public UserModel GetById()
 		{
 			string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-			UserData data = new UserData();
+			UserData data = new UserData(_configuration);
 
 			return data.GetUserById(userId).First();
 		}
