@@ -1,37 +1,29 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TRMDataManager.Library.Internal.DataAccess;
 using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Library.DataAccess
 {
-	public class ProductData
+	public class ProductData : IProductData
 	{
-		private readonly IConfiguration _configuration;
+		private readonly ISQLDataAccess _sql;
 
-		public ProductData(IConfiguration configuration)
+		public ProductData(ISQLDataAccess sql)
 		{
-			_configuration = configuration;
+			_sql = sql;
 		}
 
 		public List<ProductModel> GetProducts()
 		{
-			SQLDataAccess sql = new SQLDataAccess(_configuration);
-
-			var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "TRMData");
+			var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "TRMData");
 
 			return output;
 		}
 
 		public ProductModel GetProductById(int productId)
 		{
-			SQLDataAccess sql = new SQLDataAccess(_configuration);
-
-			var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = productId }, "TRMData").FirstOrDefault();
+			var output = _sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetById", new { Id = productId }, "TRMData").FirstOrDefault();
 
 			return output;
 		}

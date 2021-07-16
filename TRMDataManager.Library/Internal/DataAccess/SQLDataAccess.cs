@@ -11,7 +11,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
-	internal class SQLDataAccess : IDisposable
+	public class SQLDataAccess : IDisposable, ISQLDataAccess
 	{
 
 		private IDbConnection _connection;
